@@ -13,43 +13,36 @@ def get_product (code):
 def get_property(code,property):
     return products[code][property]
 
-    def main():
+def main():
 
-        with open("receipt.txt","w") as receipt:
-            receipt.write(('''
-    ==
-    CODE\t\t\tNAME\t\t\tQUANTITY\t\t\tSUBTOTAL
-    '''))
+    with open("receipt.txt","w") as receipt:
+        receipt.write(('''\n==\nCODE\t\t\tNAME\t\t\tQUANTITY\t\t\tSUBTOTAL\n'''))
 
-        order_summary = {}
+    order_summary = {}
 
-        while True:
-            order = input ("{product_code},{quantity}")
-            if order == "/":
-                break
+    while True:
+        order = input ("{product_code},{quantity}")
+        if order == "/":
+            break
+        else:
+            code, quantity = order.split(",")
+            quantity = int(quantity)
+            if code not in order_summary:
+                order_summary[code] = quantity
             else:
-                code, quantity = order.split(",")
-                quantity = int(quantity)
-                if code not in order_summary:
-                    order_summary[code] = quantity
-                else:
-                    order_summary[code] = order_summary[code] + quantity
+                order_summary[code] = order_summary[code] + quantity
 
-        total = 0
+    total = 0
 
-        for i in sorted(order_summary):
-            name = get_property (i,"name")
-            price = get_property (i,"price")
-            quantity = order_summary[i]
-            subtotal = price*quantity
-            total = total + subtotal
-            with open("receipt.txt","a+") as receipt:
-                receipt.write(f'''
-    {i}\t\t\t{name}\t\t\t{quantity}\t\t\t{subtotal}
-    ''')
+    for i in sorted(order_summary):
+        name = get_property (i,"name")
+        price = get_property (i,"price")
+        quantity = order_summary[i]
+        subtotal = price*quantity
+        total = total + subtotal
         with open("receipt.txt","a+") as receipt:
-            receipt.write(f'''
-    Total:\t\t\t\t\t\t\t\t\t{total}
-    ==''')
+            receipt.write(f'''\n{i}\t\t\t{name}\t\t\t{quantity}\t\t\t{subtotal}\n''')
+    with open("receipt.txt","a+") as receipt:
+        receipt.write(f'''\nTotal:\t\t\t\t\t\t\t\t\t{total}\n==''')
 
-    main()
+main()
